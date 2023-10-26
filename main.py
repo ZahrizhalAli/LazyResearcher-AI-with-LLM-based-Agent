@@ -17,6 +17,7 @@ import requests
 import json
 import streamlit as st
 from langchain.schema import SystemMessage
+from fastapi import FastAPI
 
 load_dotenv()
 
@@ -183,7 +184,8 @@ agent = initialize_agent(
 #
 # if __name__ == '__main__':
 #     main()
-
+# 5. Set this as an API endpoint via FastAPI
+app = FastAPI()
 class Query(BaseModel):
     query: str
 
