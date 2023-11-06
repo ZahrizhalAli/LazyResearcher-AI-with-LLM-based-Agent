@@ -1,11 +1,10 @@
 import os
 from dotenv import load_dotenv
 
-from langchain import PromptTemplate
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import MessagesPlaceholder
+from langchain.prompts import MessagesPlaceholder,PromptTemplate
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.summarize import load_summarize_chain
@@ -168,31 +167,31 @@ agent = initialize_agent(
 )
 
 # 4. Use streamlit to create a web app
-# def main():
-#     st.set_page_config(page_title="AI research agent", page_icon=":bird:")
-#
-#     st.header("AI research agent :bird:")
-#     query = st.text_input("Research goal")
-#
-#     if query:
-#         st.write("Doing research for ", query)
-#
-#         result = agent({"input": query})
-#
-#         st.info(result['output'])
-#
-#
-# if __name__ == '__main__':
-#     main()
+def main():
+    st.set_page_config(page_title="AI research agent", page_icon=":bird:")
+
+    st.header("AI research agent :bird:")
+    query = st.text_input("Research goal")
+
+    if query:
+        st.write("Doing research for ", query)
+
+        result = agent({"input": query})
+
+        st.info(result['output'])
+
+
+if __name__ == '__main__':
+    main()
 # 5. Set this as an API endpoint via FastAPI
-app = FastAPI()
-class Query(BaseModel):
-    query: str
-
-
-@app.post("/")
-def researchAgent(query: Query):
-    query = query.query
-    content = agent({"input": query})
-    actual_content = content['output']
-    return actual_content
+# app = FastAPI()
+# class Query(BaseModel):
+#     query: str
+#
+#
+# @app.post("/")
+# def researchAgent(query: Query):
+#     query = query.query
+#     content = agent({"input": query})
+#     actual_content = content['output']
+#     return actual_content
