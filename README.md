@@ -30,3 +30,6 @@ Run Streamlit:
 ## DEMO
 ![image](https://github.com/ZahrizhalAli/LazyResearcher-AI-with-LLM-based-Agent/assets/58893316/426e2629-a6fa-47cf-9ed6-1e6f45a7ae1f)
 
+![image](https://github.com/ZahrizhalAli/LazyResearcher-AI-with-LLM-based-Agent/assets/58893316/08328982-957b-4b80-8582-0ffbe762b001)
+
+
