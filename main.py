@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
+from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import MessagesPlaceholder,PromptTemplate
 from langchain.memory import ConversationSummaryBufferMemory
@@ -72,7 +73,7 @@ def scrape_website(objective: str, url: str):
         text = soup.get_text()
         print("CONTENTTTTTT:", text)
 
-        if len(text) > 10000:
+        if len(text) > 500:
             output = summary(objective, text)
             return output
         else:
@@ -166,6 +167,19 @@ agent = initialize_agent(
     memory=memory,
 )
 
+def generate_research_trend(llm, keyword):
+    # Add prompt template
+    prompt_template = PromptTemplate(
+        input_variables=['keyword'],
+        template="Given the keyword {keyword}, find a list of relevant research trend topic. always place the most significant one in a descendant order."
+    )
+
+
+    name_chain = LLMChain(llm=llm, prompt=prompt_template,
+                          output_key='get_trend')
+
+    response = name_chain({'keyword': keyword})
+    return response
 # 4. Use streamlit to create a web app
 def main():
     st.set_page_config(page_title="AI research agent", page_icon=":bird:")
@@ -173,13 +187,21 @@ def main():
     st.header("AI research agent :bird:")
     query = st.text_input("Research goal")
 
-    if query:
+    search_button = st.button('Search')
+
+    if search_button and query:
         st.write("Doing research for ", query)
 
         result = agent({"input": query})
 
         st.info(result['output'])
 
+    # Side bar
+    topic = st.sidebar.text_input('Input Keyword')
+    trend_button = st.sidebar.button("Research Trend Recently.")
+    if trend_button and topic:
+        result = generate_research_trend(llm, topic)
+        st.sidebar.text(result['get_trend'])
 
 if __name__ == '__main__':
     main()

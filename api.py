@@ -1,11 +1,4 @@
-# import requests
-#
-#
-# print(requests.post(
-#     'http://127.0.0.1:8000/',
-#     json= {'query':"What's your query?"}
-#     ).json()
-# )
+
 import os
 from dotenv import load_dotenv
 
@@ -26,6 +19,8 @@ import json
 import streamlit as st
 from langchain.schema import SystemMessage
 from fastapi import FastAPI
+from langchain.retrievers.web_research import WebResearchRetriever
+
 
 load_dotenv()
 
@@ -143,16 +138,16 @@ tools = [
 ]
 
 system_message = SystemMessage(
-    content="""You are a world class researcher, who can do detailed research on any topic and produce facts based results; 
+     content="""You are a world class researcher, who can do detailed research on any topic and produce facts based results;
             you do not make things up, you will try as hard as possible to gather facts & data to back up the research
 
             Please make sure you complete the objective above with the following rules:
-            1/ You should do enough research to gather as much information as possible about the objective
+            1/ Before you start, generate FIVE questions related to the research topic input, and thus answer each of these questions.
+            2/ You should do enough research to gather as much information as possible about the objective
             2/ If there are url of relevant links & articles, you will scrape it to gather more information
             3/ After scraping & search, you should think "is there any new things i should search & scraping based on the data I collected to increase research quality?" If answer is yes, continue; But don't do this more than 3 iteratins
             4/ You should not make things up, you should only write facts & data that you have gathered
-            5/ In the final output, You should include all reference data & links to back up your research; You should include all reference data & links to back up your research
-            6/ In the final output, You should include all reference data & links to back up your research; You should include all reference data & links to back up your research"""
+            5/ In the final output, You should include all reference data, answer & links or sources to back up your research; You should include all reference data, answers & links or sources to back up your research from all the generated answer you have made"""
 )
 
 agent_kwargs = {
@@ -161,6 +156,7 @@ agent_kwargs = {
 }
 
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
+
 memory = ConversationSummaryBufferMemory(
     memory_key="memory", return_messages=True, llm=llm, max_token_limit=1000)
 
@@ -173,19 +169,14 @@ agent = initialize_agent(
     memory=memory,
 )
 
-def main():
-    st.set_page_config(page_title="AI research agent", page_icon=":bird:")
-
-    st.header("AI research agent :bird:")
-    query = st.text_input("Research goal")
-
-    if query:
-        st.write("Doing research for ", query)
-
-        result = agent({"input": query})
-
-        st.info(result['output'])
+app = FastAPI()
+class Query(BaseModel):
+    query: str
 
 
-if __name__ == '__main__':
-    main()
+@app.post("/")
+def researchAgent(query: Query):
+    query = query.query
+    content = agent({"input": query})
+    actual_content = content['output']
+    return actual_content
