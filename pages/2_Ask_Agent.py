@@ -167,44 +167,20 @@ agent = initialize_agent(
     memory=memory,
 )
 
-def generate_research_trend(llm, keyword):
-    # Add prompt template
-    prompt_template = PromptTemplate(
-        input_variables=['keyword'],
-        template="Given the keyword {keyword}, find a list of relevant research trend topic. always place the most significant one in a descendant order."
-    )
+st.title("📝 Ask Agent")
+
+query = st.text_input("Research goal")
+
+search_button = st.button('Search')
+
+if search_button and query:
+    st.write("Doing research for ", query)
+
+    result = agent({"input": query})
+
+    st.info(result['output'])
 
 
-    name_chain = LLMChain(llm=llm, prompt=prompt_template,
-                          output_key='get_trend')
-
-    response = name_chain({'keyword': keyword})
-    return response
-# 4. Use streamlit to create a web app
-def main():
-    st.set_page_config(page_title="AI research agent", page_icon=":bird:")
-
-    st.header("AI research agent :bird:")
-    query = st.text_input("Research goal")
-
-    search_button = st.button('Search')
-
-    if search_button and query:
-        st.write("Doing research for ", query)
-
-        result = agent({"input": query})
-
-        st.info(result['output'])
-
-    # Side bar
-    topic = st.sidebar.text_input('Input Keyword')
-    trend_button = st.sidebar.button("Research Trend Recently.")
-    if trend_button and topic:
-        result = generate_research_trend(llm, topic)
-        st.sidebar.text(result['get_trend'])
-
-if __name__ == '__main__':
-    main()
 # 5. Set this as an API endpoint via FastAPI
 # app = FastAPI()
 # class Query(BaseModel):
