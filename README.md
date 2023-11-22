@@ -10,8 +10,13 @@ Project Status: On Going ⌚
 * It will be able to generate more creative and engaging text formats.
 * It will be able to interact with the outside world to perform actions and gather information.
 
+## What this LLM-Agent capable of?
+* Look for research trend from keyword
+* Find information for any of your question
+* Learn from a YouTube video and you can ask anything related to the video.
+
 ## Tools I Used 🛠
-* GPT-3.5
+* GPT-3.5 and Text Davinci
 * Serper API
 * Browserless API 
 * Streamlit 💘
