@@ -13,7 +13,7 @@ with st.form(key='my_form'):
             )
     query = st.text_area(
             label="What do you want to know about the video:",
-            max_chars=50,
+            max_chars=500,
             key="query"
             )
 
